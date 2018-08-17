@@ -4,6 +4,7 @@ defmodule Niesso do
   from Elixir easier.
   """
   use Private
+  alias Niesso.Assertion
 
   @doc """
   This function takes as input the encoded SAML response received by a SAML
@@ -14,7 +15,10 @@ defmodule Niesso do
   application.
   """
   def consume_auth_resp(saml_payload) do
-    :assertion
+    with {:ok, xml} <- decode_saml_payload(saml_payload),
+         {:ok, assertion} <- Assertion.from_xml(xml) do
+      {:ok, assertion}
+    end
   end
 
   private do

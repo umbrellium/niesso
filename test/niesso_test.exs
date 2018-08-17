@@ -5,19 +5,19 @@ defmodule NiessoTest do
   describe "consume_auth_resp/2" do
     test "consumes a response and returns an assertion" do
       response = "response"
-      assert Niesso.consume_auth_resp(:undefined, response) == :assertion
+      assert Niesso.consume_auth_resp(response) == :assertion
     end
   end
 
   describe "decoding saml payload" do
-    @encoded_payload "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHNhbWwycDpSZXNwb25zZT4KPHNhbWwycDpSZXNwb25zZT4="
+    @encoded_payload "PHNhbWwycDpSZXNwb25zZT48L3NhbWwycDpSZXNwb25zZT4="
 
-    test "has method for decoding a saml payload" do
-      assert Niesso.decode_saml_payload(:undefined, "foo") == "foo"
+    test "returns error if passed invalid payload" do
+      assert {:error, :invalid_payload} = Niesso.decode_saml_payload("foo")
     end
 
-    test "returns parsed xml document"do
-      
+    test "returns parsed xml document" do
+      assert {:ok, _xml} = Niesso.decode_saml_payload(@encoded_payload)
     end
   end
 end

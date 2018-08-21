@@ -1,25 +1,59 @@
 defmodule NiessoTest do
   use ExUnit.Case
+  use Timex
   doctest Niesso
 
   describe "consume_auth_resp/2" do
-    @valid_response "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHNhbWwycDpSZXNwb25zZSBEZXN0aW5hdGlvbj0iaHR0cHM6Ly9uaWUtaW90bGFiLnNlcnZlby5uZXQvc3NvL3NwL2NvbnN1bWUvbmllIiBJRD0iZ2VlZ2xjaWNob2VtYWFwY2JhbWtkaGhjbmViY2ltYW5mZmNrbW5jbyIgSXNzdWVJbnN0YW50PSIyMDE4LTA4LTE3VDEyOjE5OjQ5LjIxNVoiIFZlcnNpb249IjIuMCIgeG1sbnM6c2FtbDJwPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6cHJvdG9jb2wiPjxzYW1sMjpJc3N1ZXIgeG1sbnM6c2FtbDI9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphc3NlcnRpb24iPm5pZS5zZzwvc2FtbDI6SXNzdWVyPjxkczpTaWduYXR1cmUgeG1sbnM6ZHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyMiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyNyc2Etc2hhMSIvPjxkczpSZWZlcmVuY2UgVVJJPSIjZ2VlZ2xjaWNob2VtYWFwY2JhbWtkaGhjbmViY2ltYW5mZmNrbW5jbyI+PGRzOlRyYW5zZm9ybXM+PGRzOlRyYW5zZm9ybSBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyNlbnZlbG9wZWQtc2lnbmF0dXJlIi8+PGRzOlRyYW5zZm9ybSBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMTAveG1sLWV4Yy1jMTRuIyIvPjwvZHM6VHJhbnNmb3Jtcz48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiLz48ZHM6RGlnZXN0VmFsdWU+ODZXbUYvMFlIUS96aFRaV1F0b2dtdE0xVmdnPTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZT5leXBoTytOSWx3UDM2OE1LcXF3MUZ4a2pqZ2NiTmp4NmFkemlDNG93SFRvcU1NTjVQZzE0NUlQajRxQy9FczdzRHVTT2tiZ3I0QlJ1Cm8wY0VZdVRvcFhtb3NLZk5oQkkrRmpnczFNMU9HV2pPZzFzbWVWZEMrQjl1QVZhSlE4RnM3UmhMY0VZa2FJRnpxRUF3TDV1dmVDSDYKVkNGUTFBTkZWTjZteldEb0Z5dmJ6UU1IT3l5WExGZUo3NVpnVGZhUTQvblNXZlNha3lndWtleEROeVNHeFdLc0xscFZDb2Q3Y2FFMwpMaVlMODNCOEJ0U0RFRFkrd0xGUGpKRVdGNlNJOGxsNjJyTXgvUEE1RnJNUDV3Q3E0VFFjSVNNZG9ZTkJSL1QvamxEeGtwV1Z0MVdoCkdlWDVHUmpydmp1Z2dLSVhjNC9GdUIvYk1yZGxWM1NBbGpTRVZRPT08L2RzOlNpZ25hdHVyZVZhbHVlPjxkczpLZXlJbmZvPjxkczpYNTA5RGF0YT48ZHM6WDUwOUNlcnRpZmljYXRlPk1JSURNakNDQWhxZ0F3SUJBZ0lFVnNxQThqQU5CZ2txaGtpRzl3MEJBUVVGQURCYk1Rc3dDUVlEVlFRR0V3SlRSekVMTUFrR0ExVUUKQ0JNQ1UwY3hDekFKQmdOVkJBY1RBbE5ITVF3d0NnWURWUVFLRXdOT1NVVXhEREFLQmdOVkJBc1RBME5UUXpFV01CUUdBMVVFQXhNTgpZVzB1Ym1sbExtVmtkUzV6WnpBZUZ3MHhOakF5TWpJd016TXdOVGhhRncweU1UQXlNakF3TXpNd05UaGFNRnN4Q3pBSkJnTlZCQVlUCkFsTkhNUXN3Q1FZRFZRUUlFd0pUUnpFTE1Ba0dBMVVFQnhNQ1UwY3hEREFLQmdOVkJBb1RBMDVKUlRFTU1Bb0dBMVVFQ3hNRFExTkQKTVJZd0ZBWURWUVFERXcxaGJTNXVhV1V1WldSMUxuTm5NSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQQp5S0svNndQSFdhbURkMTgzaG1hNUFQUUwvb2xWbTR1eXFaMFFaeVQ4L3FLZ3VqR3haQjI1OEhOczRQNUE4QlRSWDZ5UnBSYlNWTk5ICllnRVJkUE1UdjRZcW8zYUJyaHRsY0xsWGxNTHo4VDRSVDkwMXo0dHg5ZXlWMjJGSS9rdENXTnlPanhXb2dEM1NzWDc1K1lCYk85NUMKK3pNL2pRZnlRQzFFSExWaUgrNFpjNFVEeXhpQXNYTHZIbGI5MUFxRUtuRnVwUmVSOW9QQnFtYkNtT2ZScWhzeEEwQmxHTTBhWnIwVQpldnpCTDVJV2lpa1hhUEh3aVZVZTFqQW1PZGFRTno5ZzVtU0k4MTRtTm1WOENkSS9MZTRLd3NmV3pDTWVMSlpCMUR3dXBpVFZyeEE1CnNHbjg4WHpwMllSS0NkdmVsY2NIcFFIRVB5REZCc2haejg4ODNRSURBUUFCTUEwR0NTcUdTSWIzRFFFQkJRVUFBNElCQVFDeXE5WEUKclJWMXZ4Q3F2VUpyTEtMVkV2Y3pnUXhDWVRtc2xwdysxakNzeUduTFYvMWphWUhNaVlpdEl6L1JtZXJWclZkakI0N1VGSFBKbTR4RgpTWDNVZDdCUkJONHNBdFFyM0xpbWNFMmdESCtuRWlML2NYZ0JGMlN4c2pGQTdqdTFoeUxGSTEwSWxUZURBOElONi85bFZYbXFtNWFaCnVqUlJOZ0hhLzU0a1N0Q3pUZlQxWG90ZVFONXBBL0hhZ0dVd1NsSVpxNml4aVRTODA0eEJTQVFidlJEN0VZZDluZjd1bGZkRmsrd1QKeUxpN0NQODgxdDE4dkVUbTVpNFJqNlYxd2E1dDh2cVNmbFpqTzdzWS9WQi94bnJVYVNEVFVOUHdQM2FvVDBnaU92aG5tMGJmVW1SYwp0N0dPWGladko5TkJ6MHpabUEvbjBnUkpuZytuZDZWZzwvZHM6WDUwOUNlcnRpZmljYXRlPjwvZHM6WDUwOURhdGE+PC9kczpLZXlJbmZvPjwvZHM6U2lnbmF0dXJlPjxzYW1sMnA6U3RhdHVzPjxzYW1sMnA6U3RhdHVzQ29kZSBWYWx1ZT0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOnN0YXR1czpTdWNjZXNzIi8+PC9zYW1sMnA6U3RhdHVzPjxzYW1sMjpBc3NlcnRpb24gSUQ9ImZmY2xtaWVpYnBnamVjYm5jb21ubmRhY2ppa2JuY2prb29waGtlcG0iIElzc3VlSW5zdGFudD0iMjAxOC0wOC0xN1QxMjoxOTo0OS4yMTVaIiBWZXJzaW9uPSIyLjAiIHhtbG5zOnNhbWwyPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YXNzZXJ0aW9uIj48c2FtbDI6SXNzdWVyPm5pZS5zZzwvc2FtbDI6SXNzdWVyPjxzYW1sMjpTdWJqZWN0PjxzYW1sMjpOYW1lSUQgRm9ybWF0PSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6bmFtZWlkLWZvcm1hdDpwZXJzaXN0ZW50Ij5jaGFuX3lhdV9jaHVuPC9zYW1sMjpOYW1lSUQ+PHNhbWwyOlN1YmplY3RDb25maXJtYXRpb24gTWV0aG9kPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6Y206YmVhcmVyIj48c2FtbDI6U3ViamVjdENvbmZpcm1hdGlvbkRhdGEgTm90T25PckFmdGVyPSIyMDE4LTA4LTE3VDEyOjIwOjQ5LjIxNVoiIFJlY2lwaWVudD0iaHR0cHM6Ly9uaWUtaW90bGFiLnNlcnZlby5uZXQvc3NvL3NwL2NvbnN1bWUvbmllIi8+PC9zYW1sMjpTdWJqZWN0Q29uZmlybWF0aW9uPjwvc2FtbDI6U3ViamVjdD48c2FtbDI6Q29uZGl0aW9ucyBOb3RCZWZvcmU9IjIwMTgtMDgtMTdUMTI6MTg6NDkuMjE1WiIgTm90T25PckFmdGVyPSIyMDE4LTA4LTE3VDEyOjIwOjQ5LjIxNVoiPjxzYW1sMjpBdWRpZW5jZVJlc3RyaWN0aW9uPjxzYW1sMjpBdWRpZW5jZT5pb3QubmllLmVkdS5zZzwvc2FtbDI6QXVkaWVuY2U+PC9zYW1sMjpBdWRpZW5jZVJlc3RyaWN0aW9uPjwvc2FtbDI6Q29uZGl0aW9ucz48c2FtbDI6QXV0aG5TdGF0ZW1lbnQgQXV0aG5JbnN0YW50PSIyMDE4LTA4LTE3VDEyOjE5OjQ5LjIxNVoiPjxzYW1sMjpBdXRobkNvbnRleHQ+PHNhbWwyOkF1dGhuQ29udGV4dENsYXNzUmVmPnVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphYzpjbGFzc2VzOlBhc3N3b3JkUHJvdGVjdGVkVHJhbnNwb3J0PC9zYW1sMjpBdXRobkNvbnRleHRDbGFzc1JlZj48L3NhbWwyOkF1dGhuQ29udGV4dD48L3NhbWwyOkF1dGhuU3RhdGVtZW50PjxzYW1sMjpBdHRyaWJ1dGVTdGF0ZW1lbnQ+PHNhbWwyOkF0dHJpYnV0ZSBOYW1lPSJFbWFpbCI+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlPmNoYW5feWF1X2NodW5AZy5uaWUuZWR1LnNnPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT48L3NhbWwyOkF0dHJpYnV0ZT48c2FtbDI6QXR0cmlidXRlIE5hbWU9IkRvbWFpbiI+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlPlNURDwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PC9zYW1sMjpBdHRyaWJ1dGU+PHNhbWwyOkF0dHJpYnV0ZSBOYW1lPSJOYW1lIj48c2FtbDI6QXR0cmlidXRlVmFsdWU+Y2hhbl95YXVfY2h1bjwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PC9zYW1sMjpBdHRyaWJ1dGU+PC9zYW1sMjpBdHRyaWJ1dGVTdGF0ZW1lbnQ+PC9zYW1sMjpBc3NlcnRpb24+PC9zYW1sMnA6UmVzcG9uc2U+"
+    setup [:load_valid_authn_resp]
 
-    test "consumes a response and returns an assertion" do
-      assert {:ok, assertion} = Niesso.consume_auth_resp(@valid_response)
-      assert assertion.version == "2.0"
+    test "consumes a response and returns an assertion", %{
+      response: response,
+      timestamp: timestamp
+    } do
+      assert {:ok, assertion} = Niesso.consume_auth_resp(response)
+
+      assert assertion == %Niesso.Assertion{
+               uid: "chan_yau_chun",
+               attributes: [
+                 %{name: "Email", value: "chan_yau_chun@g.nie.edu.sg"},
+                 %{name: "Domain", value: "STD"},
+                 %{name: "Name", value: "chan_yau_chun"}
+               ],
+               success: true,
+               not_on_or_after: timestamp
+             }
+    end
+
+    test "returns error tuple on invalid response" do
+      assert {:error, "Invalid base64 payload"} = Niesso.consume_auth_resp("hello world")
     end
   end
 
-  describe "decode_saml_payload/1" do
-    @encoded_payload "PHNhbWwycDpSZXNwb25zZT48L3NhbWwycDpSZXNwb25zZT4="
+  describe "consume_auth_resp/2 with expired payload" do
+    setup [:load_expired_authn_resp]
 
-    test "returns error if passed invalid payload" do
-      assert {:error, :invalid_payload} = Niesso.decode_saml_payload("foo")
+    test "returns an error tuple if stale request", %{response: response} do
+      assert {:error, "Attributes have expired"} = Niesso.consume_auth_resp(response)
     end
+  end
 
-    test "returns parsed xml document" do
-      assert {:ok, _xml} = Niesso.decode_saml_payload(@encoded_payload)
-    end
+  defp load_valid_authn_resp(_context) do
+    timestamp = Timex.now() |> Timex.shift(minutes: 1) |> DateTime.truncate(:millisecond)
+
+    {:ok, response: encoded_resp(timestamp), timestamp: timestamp}
+  end
+
+  defp load_expired_authn_resp(_context) do
+    timestamp = Timex.now() |> Timex.shift(minutes: -6) |> DateTime.truncate(:millisecond)
+
+    {:ok, response: encoded_resp(timestamp), timestamp: timestamp}
+  end
+
+  defp encoded_resp(timestamp) do
+    {:ok, xml} = File.read("test/fixtures/saml_response.xml.eex")
+
+    xml
+    |> EEx.eval_string(not_on_or_after: DateTime.to_iso8601(timestamp))
+    |> Base.encode64()
   end
 end

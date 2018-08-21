@@ -3,7 +3,7 @@ defmodule Niesso do
   SAML helper module, intended to make interacting with NIE's SAML endpoint
   from Elixir easier.
   """
-  use Private
+
   alias Niesso.Assertion
 
   @doc """
@@ -14,22 +14,38 @@ defmodule Niesso do
   verified information about the user suitable for consumption by the calling
   application.
   """
-  def consume_auth_resp(saml_payload) do
-    with {:ok, xml} <- decode_saml_payload(saml_payload),
+  @spec consume_auth_resp(String.t()) :: {:ok, Assertion.t()} | {:error, String.t()}
+  def consume_auth_resp(raw_payload) do
+    with {:ok, xml} <- decode_saml_payload(raw_payload),
          {:ok, assertion} <- Assertion.from_xml(xml) do
+      validate_assertion(assertion)
+    end
+  end
+
+  @spec decode_saml_payload(String.t()) :: {:ok, String.t()} | {:error, String.t()}
+  defp decode_saml_payload(saml_payload) do
+    case Base.decode64(saml_payload) do
+      {:ok, data} ->
+        {:ok, data}
+
+      _ ->
+        {:error, "Invalid base64 payload"}
+    end
+  end
+
+  @spec validate_assertion(Assertion.t()) :: {:ok, Assertion.t()} | {:error, String.t()}
+  defp validate_assertion(assertion) do
+    with {:ok, assertion} <- validate_date(assertion) do
       {:ok, assertion}
     end
   end
 
-  private do
-    defp decode_saml_payload(saml_payload) do
-      case Base.decode64(saml_payload) do
-        {:ok, data} ->
-          {:ok, SweetXml.parse(data)}
-
-        _ ->
-          {:error, :invalid_payload}
-      end
+  @spec validate_date(Assertion.t()) :: {:ok, Assertion.t()} | {:error, String.t()}
+  defp validate_date(assertion) do
+    if Timex.before?(Timex.now(), assertion.not_on_or_after) do
+      {:ok, assertion}
+    else
+      {:error, "Attributes have expired"}
     end
   end
 end

@@ -35,7 +35,7 @@
     <saml2:Subject>
       <saml2:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">chan_yau_chun</saml2:NameID>
       <saml2:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
-        <saml2:SubjectConfirmationData NotOnOrAfter="<%= not_on_or_after %>"
+        <saml2:SubjectConfirmationData NotOnOrAfter="<%= expires_at %>"
                                        Recipient="https://nie-iotlab.serveo.net/sso/sp/consume/nie"/>
         </saml2:SubjectConfirmation>
       </saml2:Subject>

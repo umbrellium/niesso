@@ -7,15 +7,15 @@ defmodule Niesso.Assertion do
   alias Niesso.Assertion
 
   defstruct uid: "",
-            attributes: %{},
+            attributes: [],
             success: false,
-            not_on_or_after: nil
+            expires_at: nil
 
   @type t :: %__MODULE__{
           uid: String.t(),
-          attributes: map(),
+          attributes: [map()],
           success: boolean(),
-          not_on_or_after: DateTime.t()
+          expires_at: DateTime.t()
         }
 
   @protocol "urn:oasis:names:tc:SAML:2.0:protocol"
@@ -54,7 +54,7 @@ defmodule Niesso.Assertion do
     attrs =
       Map.merge(attrs, %{
         success: success,
-        not_on_or_after: timestamp
+        expires_at: timestamp
       })
 
     {:ok, struct(Assertion, attrs)}

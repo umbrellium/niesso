@@ -20,7 +20,7 @@ defmodule NiessoTest do
                  %{name: "Name", value: "chan_yau_chun"}
                ],
                success: true,
-               not_on_or_after: timestamp
+               expires_at: timestamp
              }
     end
 
@@ -53,7 +53,7 @@ defmodule NiessoTest do
     {:ok, xml} = File.read("test/fixtures/saml_response.xml.eex")
 
     xml
-    |> EEx.eval_string(not_on_or_after: DateTime.to_iso8601(timestamp))
+    |> EEx.eval_string(expires_at: DateTime.to_iso8601(timestamp))
     |> Base.encode64()
   end
 end

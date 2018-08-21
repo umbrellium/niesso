@@ -42,7 +42,7 @@ defmodule Niesso do
 
   @spec validate_date(Assertion.t()) :: {:ok, Assertion.t()} | {:error, String.t()}
   defp validate_date(assertion) do
-    if Timex.before?(Timex.now(), assertion.not_on_or_after) do
+    if Timex.before?(Timex.now(), assertion.expires_at) do
       {:ok, assertion}
     else
       {:error, "Attributes have expired"}

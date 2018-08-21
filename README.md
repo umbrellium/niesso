@@ -34,7 +34,7 @@ be found at [https://hexdocs.pm/niesso](https://hexdocs.pm/niesso).
 Currently the API I propose to expose from this library is very simple.
 
 ```elixir
-case Niesso.consume_auth_resp(encoding, response) do
+case Niesso.consume_auth_resp(response) do
   {:ok, assertion} ->
     # use the assertion to read the attributes of the user
   {:error, reason} ->

@@ -28,25 +28,39 @@ defmodule Niesso.Assertion do
   containing this data.
   """
   def from_xml(xml) do
+    doc = parse(xml, namespace_conformant: true)
+
     attrs =
-      xml
+      doc
       |> xmap(
-        uid: ~x"//saml2p:Response/saml2:Assertion/saml2:Subject/saml2:NameID/text()"s,
+        uid:
+          ~x"//saml2p:Response/saml2:Assertion/saml2:Subject/saml2:NameID/text()"s
+          |> add_namespace("saml2p", @protocol)
+          |> add_namespace("saml2", @assertion),
         attributes: [
-          ~x"//saml2p:Response/saml2:Assertion/saml2:AttributeStatement/saml2:Attribute"l,
+          ~x"//saml2p:Response/saml2:Assertion/saml2:AttributeStatement/saml2:Attribute"l
+          |> add_namespace("saml2p", @protocol)
+          |> add_namespace("saml2", @assertion),
           name: ~x"./@Name"s,
-          value: ~x"./saml2:AttributeValue/text()"s
+          value: ~x"./saml2:AttributeValue/text()"s |> add_namespace("saml2", @assertion)
         ]
       )
 
     success =
-      xml |> xpath(~x"//saml2p:Response/saml2p:Status/saml2p:StatusCode/@Value"s) == @success
+      doc
+      |> xpath(
+        ~x"//saml2p:Response/saml2p:Status/saml2p:StatusCode/@Value"s
+        |> add_namespace("saml2p", @protocol)
+        |> add_namespace("saml2", @assertion)
+      ) == @success
 
     {:ok, timestamp} =
       Timex.parse(
-        xml
+        doc
         |> xpath(
           ~x"//saml2p:Response/saml2:Assertion/saml2:Subject/saml2:SubjectConfirmation/saml2:SubjectConfirmationData/@NotOnOrAfter"s
+          |> add_namespace("saml2p", @protocol)
+          |> add_namespace("saml2", @assertion)
         ),
         "{ISO:Extended}"
       )

@@ -1,0 +1,7 @@
+box: elixir
+
+build:
+  steps:
+    - script:
+        name: deps
+        code: mix deps.get

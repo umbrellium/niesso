@@ -1,0 +1,19 @@
+box: elixir:1.6-alpine
+
+build:
+  steps:
+    - script:
+        name: deps
+        code: |
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get
+
+    - script:
+        name: test
+        code: mix coveralls.detail
+
+    - script:
+        name: credo
+        code: mix credo --strict
+

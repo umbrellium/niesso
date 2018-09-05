@@ -4,4 +4,6 @@ build:
   steps:
     - script:
         name: deps
-        code: mix deps.get
+        code: |
+          mix local.hex --force
+          mix deps.get

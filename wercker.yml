@@ -7,3 +7,7 @@ build:
         code: |
           mix local.hex --force
           mix deps.get
+
+    - script:
+        name: test
+        code: mix coveralls.detail

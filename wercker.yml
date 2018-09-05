@@ -17,6 +17,6 @@ build:
         name: ruby
         code: |
           apk update
-          apk add ruby ruby-bundler build-base ruby-dev
+          apk add ruby ruby-bundler build-base ruby-dev cmake
           gem install pronto-credo
 

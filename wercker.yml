@@ -3,6 +3,12 @@ box: elixir:1.6-alpine
 build:
   steps:
     - script:
+        name: before
+        code: |
+          apk update
+          apk add ruby
+
+    - script:
         name: deps
         code: |
           mix local.hex --force

@@ -1,4 +1,4 @@
-box: elixir
+box: elixir:1.6-alpine
 
 build:
   steps:

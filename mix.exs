@@ -33,7 +33,8 @@ defmodule Niesso.MixProject do
       {:sweet_xml, "~> 0.6.5"},
       {:timex, "~> 3.1"},
       {:dialyxir, "~> 1.0.0-rc.3", only: [:dev], runtime: false},
-      {:excoveralls, "~> 0.9", only: :test}
+      {:excoveralls, "~> 0.9", only: :test},
+      {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false}
     ]
   end
 end

@@ -14,9 +14,6 @@ build:
         code: mix coveralls.detail
 
     - script:
-        name: ruby
-        code: |
-          apk update
-          apk add ruby ruby-bundler build-base ruby-dev cmake
-          gem install pronto-credo
+        name: credo
+        code: mix credo --strict
 

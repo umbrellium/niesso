@@ -1,4 +1,8 @@
 defmodule Niesso.Logout do
+  @moduledoc """
+  This module exposes a utility method for building a SAML logout request.
+  """
+
   require EEx
 
   @template """
@@ -18,7 +22,9 @@ defmodule Niesso.Logout do
   Returns a deflated encoded request suitable for including as an HTTP-Redirect binding parameter for SAML logout requests
   """
   def build_request(timestamp, destination, uid) do
-    build_xml(timestamp, destination, uid)
+    xml = build_xml(timestamp, destination, uid)
+
+    xml
     |> :zlib.zip()
     |> Base.encode64()
     |> URI.encode()

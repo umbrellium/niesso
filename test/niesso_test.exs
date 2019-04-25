@@ -10,6 +10,7 @@ defmodule NiessoTest do
       response: response,
       timestamp: timestamp
     } do
+
       assert {:ok, assertion} = Niesso.consume_auth_resp(response)
 
       assert assertion == %Niesso.Assertion{

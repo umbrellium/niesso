@@ -1,6 +1,8 @@
 defmodule Niesso.LogoutTest do
   use ExUnit.Case
 
+  alias Niesso.Logout
+
   describe "building requests" do
     setup do
       timestamp = DateTime.utc_now()
@@ -22,14 +24,19 @@ defmodule Niesso.LogoutTest do
     test "build_xml/3 generates an XML logout request", context do
       timestamp = context[:timestamp] |> DateTime.to_iso8601()
 
-      assert context[:document] == Niesso.Logout.build_xml(timestamp, "http://example.com", "uid")
+      assert context[:document] == Logout.build_xml(timestamp, "http://example.com", "uid")
     end
 
     test "build_request/3 generates deflated encoded request with timestamp", context do
-      request =
-        Niesso.Logout.build_request("uid", "http://example.com", timestamp: context[:timestamp])
+      request = Logout.build_request("uid", "http://example.com", timestamp: context[:timestamp])
 
-      assert context[:document] == request |> URI.decode() |> Base.decode64!() |> :zlib.unzip()
+      decoded_request =
+        request
+        |> URI.decode()
+        |> Base.decode64!()
+        |> :zlib.unzip()
+
+      assert context[:document] == decoded_request
     end
   end
 end

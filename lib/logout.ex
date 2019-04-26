@@ -22,7 +22,7 @@ defmodule Niesso.Logout do
   Returns a deflated encoded request suitable for including as an HTTP-Redirect binding parameter for SAML logout requests
   """
   def build_request(uid, destination, options \\ []) do
-    timestamp = Keyword.get(options, :timestamp, DateTime.utc_now()) |> DateTime.to_iso8601()
+    timestamp = DateTime.to_iso8601(Keyword.get(options, :timestamp, DateTime.utc_now()))
 
     xml = build_xml(timestamp, destination, uid)
 
